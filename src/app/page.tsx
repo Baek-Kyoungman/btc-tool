@@ -1,7 +1,31 @@
 import Link from "next/link";
-import { Calculator, Clock, TrendingDown, FileText } from "lucide-react";
+import { Calculator, Clock, Coins, Gauge, TrendingDown, TrendingUp, FileText, LineChart } from "lucide-react";
 
 const categories = [
+  {
+    name: "비트코인 최고가 대비 가격",
+    href: "/bitcoin-ath",
+    icon: TrendingUp,
+    description: "최고가 대비 현재 가격 비교",
+  },
+  {
+    name: "비트코인 차트",
+    href: "/bitcoin-chart",
+    icon: LineChart,
+    description: "비트코인 가격 차트",
+  },
+  {
+    name: "비트코인 공포 탐욕 지수",
+    href: "/bitcoin-fear-greed",
+    icon: Gauge,
+    description: "시장 심리 지표 (Fear & Greed)",
+  },
+  {
+    name: "비트코인 공급량",
+    href: "/bitcoin-supply",
+    icon: Coins,
+    description: "유통 공급량·채굴 진행률",
+  },
   {
     name: "사토시 계산기",
     href: "/satoshi-calculator",
@@ -31,10 +55,10 @@ const categories = [
 export default function HomePage() {
   return (
     <div className="notion-style">
-      <h1 className="mb-2 text-[2.5rem] font-bold text-[#37352f] dark:text-[#ebebeb]">
+      <h1 className="mb-2 text-xl font-bold text-[#37352f] dark:text-[#ebebeb] sm:text-2xl md:text-[2.5rem]">
         BTC Tools
       </h1>
-      <p className="mb-12 text-[1rem] leading-7 text-[#37352f99] dark:text-[#ebebeb99]">
+      <p className="mb-8 text-sm leading-7 text-[#37352f99] dark:text-[#ebebeb99] md:mb-12 md:text-base">
         비트코인 유틸리티 도구 모음. 사토시 계산, 실시간 시계, 반감기 정보를
         제공합니다.
       </p>

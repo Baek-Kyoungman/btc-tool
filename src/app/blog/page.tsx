@@ -1,15 +1,34 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { BlogPostCard, type BlogPost } from "@/components/blog/blog-post-card";
+import { BlogPagination } from "@/components/blog/blog-pagination";
 import { PenSquare } from "lucide-react";
 
-export default async function BlogPage() {
-  const supabase = await createClient();
-  const { data: posts, error } = await supabase
-    .from("posts")
-    .select("id, slug, title, excerpt, thumbnail, published_at, likes, views")
-    .order("published_at", { ascending: false });
+const POSTS_PER_PAGE = 6;
 
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
+  const pageParam = params?.page;
+  const pageStr = Array.isArray(pageParam) ? pageParam[0] : pageParam;
+  const page = Math.max(1, parseInt(pageStr ?? "1", 10) || 1);
+  const from = (page - 1) * POSTS_PER_PAGE;
+  const to = from + POSTS_PER_PAGE - 1;
+
+  const supabase = await createClient();
+  const { data: posts, error, count } = await supabase
+    .from("posts")
+    .select("id, slug, title, excerpt, thumbnail, published_at, likes, views", {
+      count: "exact",
+    })
+    .order("published_at", { ascending: false })
+    .range(from, to);
+
+  const totalPosts = count ?? 0;
   const blogPosts: BlogPost[] =
     posts?.map((p) => ({
       id: p.id,
@@ -24,13 +43,13 @@ export default async function BlogPage() {
 
   return (
     <div className="notion-style">
-      <div className="mb-12 flex items-start justify-between gap-4">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between md:mb-12">
         <div>
-          <h1 className="mb-2 text-[2.5rem] font-bold text-[#37352f] dark:text-[#ebebeb]">
+          <h1 className="mb-2 text-xl font-bold text-[#37352f] dark:text-[#ebebeb] sm:text-2xl md:text-[2.5rem]">
             블로그
           </h1>
           <p className="text-[1rem] leading-7 text-[#37352f99] dark:text-[#ebebeb99]">
-            비트코인 관련 아티클 (Tiptap 에디터, Supabase 연동)
+            비트코인 관련 아티클
           </p>
         </div>
         <Link
@@ -65,11 +84,18 @@ export default async function BlogPage() {
       )}
 
       {blogPosts.length > 0 && (
-        <div className="grid gap-6 sm:grid-cols-2">
-          {blogPosts.map((post) => (
-            <BlogPostCard key={post.id} post={post} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {blogPosts.map((post) => (
+              <BlogPostCard key={post.id} post={post} />
+            ))}
+          </div>
+          {totalPosts > POSTS_PER_PAGE && (
+            <Suspense fallback={null}>
+              <BlogPagination totalPosts={totalPosts} />
+            </Suspense>
+          )}
+        </>
       )}
     </div>
   );

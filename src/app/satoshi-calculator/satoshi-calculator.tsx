@@ -33,16 +33,15 @@ export function SatoshiCalculator() {
 
   const fetchPrices = useCallback(async () => {
     try {
-      const res = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,krw"
-      );
+      const res = await fetch("/api/price");
+      if (!res.ok) throw new Error("Price fetch failed");
       const data = await res.json();
-      const btcUsd = data.bitcoin?.usd ?? 0;
-      const btcKrw = data.bitcoin?.krw ?? 0;
+      const btcUsd = data.btcUsd ?? 0;
+      const btcKrw = data.btcKrw ?? 0;
       setPrices({
         btcUsd,
         btcKrw,
-        usdKrw: btcKrw && btcUsd ? btcKrw / btcUsd : 0,
+        usdKrw: data.usdKrw ?? (btcKrw && btcUsd ? btcKrw / btcUsd : 0),
       });
     } catch {
       setPrices({
@@ -127,7 +126,7 @@ export function SatoshiCalculator() {
       {/* 헤더 */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <h1 className="text-[2rem] font-bold text-[#37352f] dark:text-[#ebebeb] sm:text-[2.5rem]">
+          <h1 className="text-xl font-bold text-[#37352f] dark:text-[#ebebeb] sm:text-2xl md:text-[2.5rem]">
             사토시 계산기
           </h1>
         </div>
@@ -294,6 +293,67 @@ export function SatoshiCalculator() {
               USD
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* 사토시 설명 */}
+      <div className="rounded-lg border border-[rgba(55,53,47,0.09)] bg-[rgba(55,53,47,0.02)] p-6 dark:border-[rgba(255,255,255,0.09)] dark:bg-[rgba(255,255,255,0.02)]">
+        <h2 className="mb-4 text-lg font-semibold text-[#37352f] dark:text-[#ebebeb]">
+          사토시(Satoshi)란?
+        </h2>
+        <div className="space-y-3 text-sm leading-7 text-[#37352f99] dark:text-[#ebebeb99]">
+          <p>
+            <strong className="text-[#37352f] dark:text-[#ebebeb]">사토시(Satoshi, SATS)</strong>는
+            비트코인의 가장 작은 단위입니다. 비트코인 창시자로 알려진 사토시 나카모토(Satoshi
+            Nakamoto)의 이름에서 유래했습니다.
+          </p>
+          <p>
+            1 BTC = 100,000,000 SATS (1억 사토시)입니다. 비트코인은 소수점 8자리까지 나눌 수
+            있으며, 그 중 가장 작은 0.00000001 BTC가 1 사토시에 해당합니다. 소액 결제나
+            오픈소스 프로젝트 후원 시 사토시 단위가 널리 사용됩니다.
+          </p>
+        </div>
+        <h3 className="mb-3 mt-6 text-sm font-semibold text-[#37352f] dark:text-[#ebebeb]">
+          사토시 ↔ 비트코인 환산표
+        </h3>
+        <div className="overflow-hidden rounded-lg border border-[rgba(55,53,47,0.09)] dark:border-[rgba(255,255,255,0.09)]">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[rgba(55,53,47,0.09)] bg-[rgba(55,53,47,0.04)] dark:border-b-[rgba(255,255,255,0.09)] dark:bg-[rgba(255,255,255,0.04)]">
+                <th className="px-4 py-3 text-left font-medium text-[#37352f] dark:text-[#ebebeb]">
+                  SATS
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-[#37352f] dark:text-[#ebebeb]">
+                  BTC
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                [1, "0.00000001"],
+                [10, "0.0000001"],
+                [100, "0.000001"],
+                [1000, "0.00001"],
+                [10000, "0.0001"],
+                [100000, "0.001"],
+                [1000000, "0.01"],
+                [10000000, "0.1"],
+                [100000000, "1"],
+              ].map(([sats, btc]) => (
+                <tr
+                  key={String(sats)}
+                  className="border-b border-[rgba(55,53,47,0.09)] last:border-0 dark:border-b-[rgba(255,255,255,0.09)]"
+                >
+                  <td className="px-4 py-2.5 font-mono text-[#37352f] dark:text-[#ebebeb]">
+                    {Number(sats).toLocaleString()} SATS
+                  </td>
+                  <td className="px-4 py-2.5 font-mono text-[#37352f99] dark:text-[#ebebeb99]">
+                    = {btc} BTC
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

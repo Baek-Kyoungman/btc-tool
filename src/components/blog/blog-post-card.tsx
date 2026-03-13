@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, Eye } from "lucide-react";
+import { Heart, Eye, FileText } from "lucide-react";
 
 export interface BlogPost {
   id: string;
@@ -17,17 +17,38 @@ interface BlogPostCardProps {
   post: BlogPost;
 }
 
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export function BlogPostCard({ post }: BlogPostCardProps) {
   return (
     <Link
       href={`/blog/${post.id}`}
-      className="group flex gap-4 rounded-lg border border-[rgba(55,53,47,0.09)] p-4 transition-colors hover:border-[rgba(55,53,47,0.2)] hover:bg-[rgba(55,53,47,0.04)] dark:border-[rgba(255,255,255,0.09)] dark:hover:border-[rgba(255,255,255,0.2)] dark:hover:bg-[rgba(255,255,255,0.04)]"
+      className="group flex flex-col overflow-hidden rounded-xl border border-[rgba(55,53,47,0.2)] bg-white transition-colors hover:border-amber-500/50 dark:border-[rgba(255,255,255,0.2)] dark:bg-[#252525] dark:hover:border-amber-500/50"
     >
-      <div className="min-w-0 flex-1">
-        <div className="mb-2 flex items-center gap-3 text-xs text-[#37352f99] dark:text-[#ebebeb99]">
-          <time dateTime={post.publishedAt}>
-            {new Date(post.publishedAt).toISOString().slice(0, 10)}
-          </time>
+      {post.thumbnail ? (
+        <div className="relative aspect-[16/9] w-full overflow-hidden bg-[rgba(55,53,47,0.04)] dark:bg-[rgba(255,255,255,0.04)]">
+          <Image
+            src={post.thumbnail}
+            alt=""
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            sizes="(max-width: 640px) 100vw, 50vw"
+          />
+        </div>
+      ) : (
+        <div className="flex aspect-[16/9] w-full items-center justify-center bg-[rgba(55,53,47,0.04)] dark:bg-[rgba(255,255,255,0.04)]">
+          <FileText className="h-12 w-12 text-[#37352f33] dark:text-[#ebebeb33]" />
+        </div>
+      )}
+      <div className="flex flex-1 flex-col p-5">
+        <div className="mb-3 flex items-center gap-3 text-xs text-[#37352f99] dark:text-[#ebebeb99]">
+          <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
           <span className="flex items-center gap-1">
             <Heart className="h-3.5 w-3.5" aria-hidden />
             {post.likes}
@@ -37,27 +58,13 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
             {post.views}
           </span>
         </div>
-        <h2 className="mb-2 line-clamp-2 text-base font-bold leading-snug text-[#37352f] transition-colors group-hover:text-amber-600 dark:text-[#ebebeb] sm:text-lg dark:group-hover:text-amber-400">
+        <h2 className="mb-2 line-clamp-2 text-lg font-semibold leading-snug text-[#37352f] transition-colors group-hover:text-amber-600 dark:text-[#ebebeb] dark:group-hover:text-amber-400">
           {post.title}
         </h2>
-        <p className="line-clamp-3 text-sm leading-relaxed text-[#37352f99] dark:text-[#ebebeb99]">
+        <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[#37352f99] dark:text-[#ebebeb99]">
           {post.excerpt}
-          <span className="ml-0.5">...</span>
         </p>
       </div>
-      {post.thumbnail ? (
-        <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-lg bg-[rgba(55,53,47,0.06)] dark:bg-[rgba(255,255,255,0.06)] sm:h-32 sm:w-32">
-          <Image
-            src={post.thumbnail}
-            alt=""
-            fill
-            className="object-cover transition-transform group-hover:scale-105"
-            sizes="128px"
-          />
-        </div>
-      ) : (
-        <div className="h-28 w-28 shrink-0 rounded-lg bg-[rgba(55,53,47,0.06)] dark:bg-[rgba(255,255,255,0.06)] sm:h-32 sm:w-32" />
-      )}
     </Link>
   );
 }

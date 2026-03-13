@@ -90,6 +90,12 @@ export async function uploadImage(formData: FormData): Promise<
     });
 
   if (error) {
+    if (error.message?.toLowerCase().includes("bucket not found")) {
+      return {
+        error:
+          "blog-images 버킷이 없습니다. Supabase 대시보드 > Storage > New bucket에서 생성하거나 docs/create-blog-images-bucket.sql을 실행하세요.",
+      };
+    }
     return { error: error.message };
   }
 
