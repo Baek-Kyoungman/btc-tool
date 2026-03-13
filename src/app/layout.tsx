@@ -1,0 +1,44 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { Sidebar } from "@/components/layout/sidebar";
+import { MainContent } from "@/components/layout/main-content";
+import { MuiProvider } from "@/providers/mui-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "BTC Tools - 사토시 계산기, 비트코인 시계, 반감기",
+  description:
+    "비트코인 사토시 계산기, 실시간 시계, 반감기 카운트다운 및 블로그. AdSense 승인을 위한 품질 콘텐츠",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ko" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen bg-[#ffffff] antialiased dark:bg-[#191919]`}
+      >
+        <ThemeProvider>
+          <MuiProvider>
+            <Sidebar />
+            <MainContent>{children}</MainContent>
+          </MuiProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
