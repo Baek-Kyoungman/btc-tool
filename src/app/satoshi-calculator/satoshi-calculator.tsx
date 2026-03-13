@@ -357,9 +357,6 @@ export function SatoshiCalculator() {
         </div>
       </div>
 
-      <p className="mt-10 pt-6 text-center text-[10px] text-[#37352f66] dark:text-[#ebebeb66]">
-        데이터 출처: Upbit API, Binance API
-      </p>
     </div>
   );
 }

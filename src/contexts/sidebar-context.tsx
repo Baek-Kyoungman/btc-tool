@@ -3,10 +3,15 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 
 const STORAGE_KEY = "btc-tool-sidebar-collapsed";
+const POSITION_KEY = "btc-tool-sidebar-position";
+
+export type SidebarPosition = "left" | "right";
 
 type SidebarContextType = {
   collapsed: boolean;
+  position: SidebarPosition;
   toggle: () => void;
+  togglePosition: () => void;
 };
 
 const SidebarContext = createContext<SidebarContextType | null>(null);
@@ -20,12 +25,24 @@ function getStoredCollapsed(): boolean {
   }
 }
 
+function getStoredPosition(): SidebarPosition {
+  if (typeof window === "undefined") return "left";
+  try {
+    const v = localStorage.getItem(POSITION_KEY);
+    return v === "right" ? "right" : "left";
+  } catch {
+    return "left";
+  }
+}
+
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsedState] = useState(false);
+  const [position, setPositionState] = useState<SidebarPosition>("left");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setCollapsedState(getStoredCollapsed());
+    setPositionState(getStoredPosition());
     setMounted(true);
   }, []);
 
@@ -41,8 +58,27 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const togglePosition = useCallback(() => {
+    setPositionState((prev) => {
+      const next = prev === "left" ? "right" : "left";
+      try {
+        localStorage.setItem(POSITION_KEY, next);
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  }, []);
+
   return (
-    <SidebarContext.Provider value={{ collapsed: mounted ? collapsed : false, toggle }}>
+    <SidebarContext.Provider
+      value={{
+        collapsed: mounted ? collapsed : false,
+        position: mounted ? position : "left",
+        toggle,
+        togglePosition,
+      }}
+    >
       {children}
     </SidebarContext.Provider>
   );

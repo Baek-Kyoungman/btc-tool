@@ -13,6 +13,7 @@ import {
   Menu,
   PanelLeft,
   PanelLeftClose,
+  PanelRight,
   TrendingDown,
   TrendingUp,
   FileText,
@@ -40,7 +41,7 @@ const TOOLTIP_OFFSET = 12;
 export function Sidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { collapsed, toggle } = useSidebar();
+  const { collapsed, position, toggle, togglePosition } = useSidebar();
   const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
 
   const closeMobile = () => setMobileOpen(false);
@@ -61,10 +62,15 @@ export function Sidebar() {
       {collapsed && tooltip && (
         <div
           className="pointer-events-none fixed z-[200] whitespace-nowrap rounded-md border border-[rgba(55,53,47,0.12)] bg-[#f7f6f3] px-2.5 py-1.5 text-xs font-medium text-[#37352f] shadow-lg dark:border-[rgba(255,255,255,0.12)] dark:bg-[#252525] dark:text-[#ebebeb]"
-          style={{
-            left: tooltip.x + TOOLTIP_OFFSET,
-            top: tooltip.y + TOOLTIP_OFFSET,
-          }}
+          style={
+            position === "left"
+              ? { left: tooltip.x + TOOLTIP_OFFSET, top: tooltip.y + TOOLTIP_OFFSET }
+              : {
+                  left: tooltip.x - TOOLTIP_OFFSET,
+                  top: tooltip.y + TOOLTIP_OFFSET,
+                  transform: "translateX(-100%)",
+                }
+          }
         >
           {tooltip.text}
         </div>
@@ -105,9 +111,13 @@ export function Sidebar() {
       {/* 데스크톱 사이드바 / 모바일 드로어 */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-[rgba(55,53,47,0.09)] bg-[#f7f6f3] transition-[width,transform] duration-200 ease-out dark:border-[rgba(255,255,255,0.09)] dark:bg-[#191919]",
+          "fixed top-0 z-40 flex h-screen w-64 flex-col bg-[#f7f6f3] transition-[width,transform] duration-200 ease-out dark:bg-[#191919]",
+          position === "left"
+            ? "left-0 border-r border-[rgba(55,53,47,0.09)] dark:border-[rgba(255,255,255,0.09)]"
+            : "right-0 border-l border-[rgba(55,53,47,0.09)] dark:border-[rgba(255,255,255,0.09)]",
           "md:translate-x-0",
-          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          position === "left" && (mobileOpen ? "translate-x-0" : "-translate-x-full"),
+          position === "right" && (mobileOpen ? "translate-x-0" : "translate-x-full"),
           collapsed && "md:w-16"
         )}
       >
@@ -189,6 +199,30 @@ export function Sidebar() {
                 <ThemeToggle />
               </div>
             )}
+            <button
+              type="button"
+              onClick={togglePosition}
+              onMouseEnter={showTooltip(position === "left" ? "우측으로 이동" : "좌측으로 이동")}
+              onMouseMove={moveTooltip(position === "left" ? "우측으로 이동" : "좌측으로 이동")}
+              onMouseLeave={hideTooltip}
+              className={cn(
+                "flex w-full items-center rounded-md py-2.5 text-sm text-[#37352f99] transition-colors hover:bg-[rgba(55,53,47,0.04)] hover:text-[#37352f] dark:text-[#ebebeb99] dark:hover:bg-[rgba(255,255,255,0.04)] dark:hover:text-[#ebebeb]",
+                collapsed ? "justify-center px-0" : "gap-3 px-3"
+              )}
+              aria-label={position === "left" ? "우측으로 이동" : "좌측으로 이동"}
+            >
+              {position === "left" ? (
+                <>
+                  <PanelRight className="h-4 w-4 shrink-0" />
+                  {!collapsed && <span>우측으로 이동</span>}
+                </>
+              ) : (
+                <>
+                  <PanelLeft className="h-4 w-4 shrink-0" />
+                  {!collapsed && <span>좌측으로 이동</span>}
+                </>
+              )}
+            </button>
             <button
               type="button"
               onClick={toggle}

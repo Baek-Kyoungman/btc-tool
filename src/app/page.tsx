@@ -54,7 +54,8 @@ const categories = [
     name: "블로그",
     href: "/blog",
     icon: FileText,
-    description: "비트코인 관련 아티클",
+    description:
+      "BTC Tools 블로그는 비트코인 시장, 투자 정보, 온체인 데이터, 그리고 유용한 분석 내용을 제공합니다. 복잡한 정보를 쉽게 이해할 수 있도록 정리된 비트코인 인사이트를 확인해보세요.",
   },
 ];
 
