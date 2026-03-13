@@ -380,9 +380,6 @@ export function BitcoinChart() {
             </p>
           </div>
         )}
-        <p className="mt-2 text-center text-xs text-[#37352f99] dark:text-[#ebebeb99]">
-          CoinGecko API · 면책조항
-        </p>
       </div>
 
       {/* 환율 변환기 */}
@@ -420,6 +417,10 @@ export function BitcoinChart() {
           </div>
         </div>
       </div>
+
+      <p className="mt-10 pt-6 text-center text-[10px] text-[#37352f66] dark:text-[#ebebeb66]">
+        데이터 출처: Upbit API
+      </p>
     </div>
   );
 }

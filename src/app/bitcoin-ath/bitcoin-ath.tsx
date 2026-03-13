@@ -168,8 +168,8 @@ export function BitcoinAth() {
         </button>
       </div>
 
-      <p className="text-center text-xs text-[#37352f99] dark:text-[#ebebeb99]">
-        CoinGecko API · 면책조항
+      <p className="mt-10 pt-6 text-center text-[10px] text-[#37352f66] dark:text-[#ebebeb66]">
+        데이터 출처: CoinGecko API
       </p>
     </div>
   );

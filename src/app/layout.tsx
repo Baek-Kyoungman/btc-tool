@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { MainContent } from "@/components/layout/main-content";
 import { MuiProvider } from "@/providers/mui-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { SidebarProvider } from "@/contexts/sidebar-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,8 +42,10 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <MuiProvider>
-            <Sidebar />
-            <MainContent>{children}</MainContent>
+            <SidebarProvider>
+              <Sidebar />
+              <MainContent>{children}</MainContent>
+            </SidebarProvider>
           </MuiProvider>
         </ThemeProvider>
       </body>

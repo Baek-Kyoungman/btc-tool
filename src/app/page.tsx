@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Calculator, Clock, Coins, Gauge, TrendingDown, TrendingUp, FileText, LineChart } from "lucide-react";
+import { Calculator, Clock, Coins, Gauge, LineChart, TrendingDown, TrendingUp, FileText, Zap } from "lucide-react";
 
 const categories = [
   {
@@ -45,6 +45,12 @@ const categories = [
     description: "다음 반감기까지 카운트다운",
   },
   {
+    name: "mempool 수수료",
+    href: "/mempool-fees",
+    icon: Zap,
+    description: "트랜잭션 권장 수수료 (sat/vB)",
+  },
+  {
     name: "블로그",
     href: "/blog",
     icon: FileText,
@@ -58,10 +64,21 @@ export default function HomePage() {
       <h1 className="mb-2 text-xl font-bold text-[#37352f] dark:text-[#ebebeb] sm:text-2xl md:text-[2.5rem]">
         BTC Tools
       </h1>
-      <p className="mb-8 text-sm leading-7 text-[#37352f99] dark:text-[#ebebeb99] md:mb-12 md:text-base">
-        비트코인 유틸리티 도구 모음. 사토시 계산, 실시간 시계, 반감기 정보를
-        제공합니다.
-      </p>
+      <div className="mb-8 space-y-3 text-sm leading-7 text-[#37352f99] dark:text-[#ebebeb99] md:mb-12 md:text-base">
+        <p>
+          BTC Tools는 비트코인 가격 정보와 다양한 투자 분석 도구를 제공하는
+          웹 서비스입니다.
+        </p>
+        <p>
+          비트코인 차트, 최고가 대비 가격 비교, 공포 탐욕 지수, 사토시 계산기,
+          반감기 카운트다운 등 비트코인 투자에 필요한 핵심 데이터를 한 곳에서
+          확인할 수 있습니다.
+        </p>
+        <p>
+          빠르고 직관적인 인터페이스를 통해 누구나 쉽게 비트코인 시장 데이터를
+          분석할 수 있도록 설계되었습니다.
+        </p>
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         {categories.map((category) => {
