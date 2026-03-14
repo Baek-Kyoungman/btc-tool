@@ -49,7 +49,7 @@ npm run dev
 
 | 카테고리 | API |
 |---------|-----|
-| 비트코인 최고가 대비 가격 | CoinGecko |
+| 비트코인 최고가 대비 가격 | Upbit |
 | 비트코인 차트 | Upbit |
 | 비트코인 공포·탐욕 지수 | CoinMarketCap |
 | 비트코인 공급량 | Blockchain.info |
@@ -63,6 +63,16 @@ npm run dev
 - Notion 스타일 레이아웃 (미니멀, 넓은 여백)
 - 다크 모드 지원
 - 반응형 사이드바 (접기/펼치기)
+
+## 트러블슈팅
+
+### "Origin not allowed" 에러
+
+Chrome 확장 프로그램(지갑 등)이 주입하는 스크립트에서 발생할 수 있습니다. 앱에서 해당 에러를 무시하도록 처리했습니다. 여전히 발생하면:
+
+- **방법 1**: localhost에서 해당 확장 비활성화 (Chrome → 확장 프로그램 → 사이트에서 액세스 → localhost 제한)
+- **방법 2**: 시크릿 창에서 확장 없이 실행
+- **방법 3**: `next.config.ts`의 `allowedDevOrigins`에 접속 중인 호스트 추가
 
 ## 라이선스
 

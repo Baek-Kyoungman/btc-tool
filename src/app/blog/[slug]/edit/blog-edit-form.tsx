@@ -20,6 +20,7 @@ interface Post {
   excerpt: string;
   content: string;
   thumbnail: string | null;
+  tags?: string | null;
 }
 
 export function BlogEditForm({ post }: { post: Post }) {
@@ -80,6 +81,23 @@ export function BlogEditForm({ post }: { post: Post }) {
           type="text"
           defaultValue={post.slug}
           placeholder="비워두면 제목에서 자동 생성"
+          className="w-full rounded-md border border-[rgba(55,53,47,0.2)] bg-transparent px-3 py-2 text-[#37352f] placeholder:text-[#37352f66] focus:outline-none focus:ring-2 focus:ring-amber-500/50 dark:border-[rgba(255,255,255,0.2)] dark:text-[#ebebeb] dark:placeholder:text-[#ebebeb66]"
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="tags"
+          className="mb-2 block text-sm font-medium text-[#37352f] dark:text-[#ebebeb]"
+        >
+          태그 (선택)
+        </label>
+        <input
+          id="tags"
+          name="tags"
+          type="text"
+          defaultValue={post.tags ?? ""}
+          placeholder="#태그입력 (쉼표로 구분)"
           className="w-full rounded-md border border-[rgba(55,53,47,0.2)] bg-transparent px-3 py-2 text-[#37352f] placeholder:text-[#37352f66] focus:outline-none focus:ring-2 focus:ring-amber-500/50 dark:border-[rgba(255,255,255,0.2)] dark:text-[#ebebeb] dark:placeholder:text-[#ebebeb66]"
         />
       </div>

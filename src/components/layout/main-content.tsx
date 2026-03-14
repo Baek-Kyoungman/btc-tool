@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "@/contexts/sidebar-context";
 
 const DATA_SOURCE_MAP: Record<string, string> = {
-  "/bitcoin-ath": "CoinGecko API",
+  "/bitcoin-ath": "Upbit API",
   "/bitcoin-chart": "Upbit API",
   "/bitcoin-fear-greed": "CoinMarketCap API",
   "/bitcoin-supply": "Blockchain.info",

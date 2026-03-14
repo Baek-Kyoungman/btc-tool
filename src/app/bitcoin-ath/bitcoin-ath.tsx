@@ -35,7 +35,7 @@ export function BitcoinAth() {
   const fetchData = useCallback(async () => {
     try {
       setError(null);
-      const res = await fetch("/api/coin-gecko/ath");
+      const res = await fetch("/api/upbit/ath");
       if (!res.ok) throw new Error("ATH fetch failed");
       const data = await res.json();
       setCurrentPrice(data.currentPrice ?? 0);
@@ -168,6 +168,9 @@ export function BitcoinAth() {
         </button>
       </div>
 
+      <p className="text-center text-xs text-[#37352f99] dark:text-[#ebebeb99]">
+        Upbit API · 면책조항
+      </p>
     </div>
   );
 }

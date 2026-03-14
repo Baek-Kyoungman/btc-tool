@@ -6,6 +6,41 @@ import { MainContent } from "@/components/layout/main-content";
 import { MuiProvider } from "@/providers/mui-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { SidebarProvider } from "@/contexts/sidebar-context";
+import { ExtensionErrorSuppress } from "@/components/extension-error-suppress";
+
+const EXTENSION_ERROR_SUPPRESS = `
+(function(){
+  function isExtensionError(msg, src) {
+    if (!msg) return false;
+    var s = String(msg);
+    var isExt = !src || String(src).indexOf('chrome-extension://') === 0;
+    if (!isExt) return false;
+    if (s.indexOf('Origin not allowed') !== -1) return true;
+    if (s.indexOf('sseError not found') !== -1) return true;
+    return false;
+  }
+  var orig = window.onerror;
+  window.onerror = function(msg, src, line, col, err) {
+    if (isExtensionError(msg, src)) return true;
+    if (orig) return orig.apply(this, arguments);
+    return false;
+  };
+  window.addEventListener('error', function(e) {
+    if (isExtensionError(e.message, e.filename)) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      return true;
+    }
+  }, true);
+  window.addEventListener('unhandledrejection', function(e) {
+    var msg = e.reason && (e.reason.message || String(e.reason));
+    if (msg && (msg.indexOf('Origin not allowed') !== -1 || msg.indexOf('sseError not found') !== -1)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+})();
+`;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,10 +72,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" suppressHydrationWarning className="scroll-smooth">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{ __html: EXTENSION_ERROR_SUPPRESS }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen bg-[#ffffff] antialiased dark:bg-[#191919]`}
       >
         <ThemeProvider>
+          <ExtensionErrorSuppress />
           <MuiProvider>
             <SidebarProvider>
               <Sidebar />

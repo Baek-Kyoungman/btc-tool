@@ -27,6 +27,17 @@ export default async function BlogPostPage({
     notFound();
   }
 
+  const postTags = post.tags
+    ? Array.from(
+        new Set(
+          post.tags
+            .split(/[,\s#]+/)
+            .map((t: string) => t.trim())
+            .filter(Boolean)
+        )
+      )
+    : [];
+
   const { data: prevPost } = await supabase
     .from("posts")
     .select("id, title")
@@ -109,6 +120,21 @@ export default async function BlogPostPage({
           <h1 className="mb-4 text-[2rem] font-bold leading-tight tracking-tight text-[#37352f] dark:text-[#ebebeb] sm:text-[2.5rem]">
             {post.title}
           </h1>
+
+          {/* 태그 */}
+          {postTags.length > 0 && (
+            <div className="mb-6 flex flex-wrap gap-2">
+              {postTags.map((tag, i) => (
+                <Link
+                  key={`${tag}-${i}`}
+                  href={`/blog?tag=${encodeURIComponent(tag)}`}
+                  className="rounded-full bg-[rgba(55,53,47,0.06)] px-3 py-1.5 text-sm text-[#37352f99] transition-colors hover:bg-amber-500/20 hover:text-amber-600 dark:bg-[rgba(255,255,255,0.06)] dark:text-[#ebebeb99] dark:hover:bg-amber-400/20 dark:hover:text-amber-400"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* 요약 */}
           {post.excerpt && (

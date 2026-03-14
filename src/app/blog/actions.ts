@@ -117,6 +117,14 @@ export async function createPost(
   const content = formData.get("content") as string | null;
   const slug = formData.get("slug") as string | null;
   const thumbnail = (formData.get("thumbnail") as string | null) || null;
+  const tagsRaw = formData.get("tags") as string | null;
+  const tags = tagsRaw
+    ? tagsRaw
+        .split(/[,\s#]+/)
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .join(", ")
+    : null;
 
   if (!title?.trim()) return { error: "제목을 입력하세요." };
   if (!excerpt?.trim()) return { error: "요약을 입력하세요." };
@@ -141,6 +149,7 @@ export async function createPost(
       excerpt: excerpt.trim(),
       content: content.trim(),
       thumbnail: thumbnail || null,
+      tags: tags || null,
     })
     .select("id")
     .single();
@@ -172,6 +181,14 @@ export async function updatePost(
   const content = formData.get("content") as string | null;
   const slug = formData.get("slug") as string | null;
   const thumbnail = (formData.get("thumbnail") as string | null) || null;
+  const tagsRaw = formData.get("tags") as string | null;
+  const tags = tagsRaw
+    ? tagsRaw
+        .split(/[,\s#]+/)
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .join(", ")
+    : null;
 
   if (!title?.trim()) return { error: "제목을 입력하세요." };
   if (!excerpt?.trim()) return { error: "요약을 입력하세요." };
@@ -196,6 +213,7 @@ export async function updatePost(
       excerpt: excerpt.trim(),
       content: content.trim(),
       thumbnail: thumbnail || null,
+      tags: tags || null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

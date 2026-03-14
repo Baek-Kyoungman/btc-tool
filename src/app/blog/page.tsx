@@ -7,26 +7,53 @@ import { PenSquare } from "lucide-react";
 
 const POSTS_PER_PAGE = 6;
 
+function parseTags(tags: string | null): string[] {
+  if (!tags?.trim()) return [];
+  return tags
+    .split(/[,\s#]+/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+}
+
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; tag?: string }>;
 }) {
   const params = await searchParams;
   const pageParam = params?.page;
+  const tagParam = params?.tag;
   const pageStr = Array.isArray(pageParam) ? pageParam[0] : pageParam;
+  const tag = typeof tagParam === "string" ? tagParam.trim() : null;
   const page = Math.max(1, parseInt(pageStr ?? "1", 10) || 1);
   const from = (page - 1) * POSTS_PER_PAGE;
   const to = from + POSTS_PER_PAGE - 1;
 
   const supabase = await createClient();
-  const { data: posts, error, count } = await supabase
+
+  let postsQuery = supabase
     .from("posts")
-    .select("id, slug, title, excerpt, thumbnail, published_at, likes, views", {
+    .select("id, slug, title, excerpt, thumbnail, published_at, likes, views, tags", {
       count: "exact",
     })
-    .order("published_at", { ascending: false })
-    .range(from, to);
+    .order("published_at", { ascending: false });
+
+  if (tag) {
+    postsQuery = postsQuery.ilike("tags", `%${tag}%`);
+  }
+  const { data: posts, error, count } = await postsQuery.range(from, to);
+
+  const { data: allTagsRows } = await supabase
+    .from("posts")
+    .select("tags")
+    .not("tags", "is", null);
+  const allTags = Array.from(
+    new Set(
+      (allTagsRows ?? [])
+        .flatMap((r) => parseTags(r.tags))
+        .filter(Boolean)
+    )
+  ).sort();
 
   const totalPosts = count ?? 0;
   const blogPosts: BlogPost[] =
@@ -62,6 +89,33 @@ export default async function BlogPage({
           글쓰기
         </Link>
       </div>
+
+      {allTags.length > 0 && (
+        <div className="mb-8 flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-[#37352f99] dark:text-[#ebebeb99]">
+            태그:
+          </span>
+          {allTags.map((t) => {
+            const isActive = tag === t;
+            const href = isActive
+              ? "/blog"
+              : `/blog?tag=${encodeURIComponent(t)}`;
+            return (
+              <Link
+                key={t}
+                href={href}
+                className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
+                  isActive
+                    ? "bg-amber-500 text-white"
+                    : "bg-[rgba(55,53,47,0.06)] text-[#37352f99] hover:bg-[rgba(55,53,47,0.1)] hover:text-[#37352f] dark:bg-[rgba(255,255,255,0.06)] dark:text-[#ebebeb99] dark:hover:bg-[rgba(255,255,255,0.1)] dark:hover:text-[#ebebeb]"
+                }`}
+              >
+                #{t}
+              </Link>
+            );
+          })}
+        </div>
+      )}
 
       {error && (
         <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
