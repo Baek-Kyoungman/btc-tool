@@ -1,10 +1,18 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { BitcoinFearGreed } from "./bitcoin-fear-greed";
+import { absoluteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "비트코인 공포 탐욕 지수 | BTC Tools",
+  title: "비트코인 공포 탐욕 지수",
   description:
-    "비트코인 시장 심리 지표. Alternative.me Fear & Greed Index를 한눈에 확인하세요.",
+    "비트코인 시장 심리 지표. Alternative.me Fear & Greed Index (0=극도 공포, 100=극도 탐욕)를 한눈에 확인하세요.",
+  keywords: ["공포탐욕지수", "Fear and Greed", "비트코인 시장심리", "암호화폐 지수"],
+  openGraph: {
+    title: "비트코인 공포 탐욕 지수 | BTC Tools",
+    description: "시장 심리 지표 (0~100)",
+    url: absoluteUrl("/bitcoin-fear-greed"),
+  },
+  alternates: { canonical: absoluteUrl("/bitcoin-fear-greed") },
 };
 
 export default function BitcoinFearGreedPage() {

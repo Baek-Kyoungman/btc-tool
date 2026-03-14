@@ -1,12 +1,66 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { verifyAdmin } from "../actions";
 import { ArrowLeft, ArrowRight, Calendar, Heart, Eye, Pencil } from "lucide-react";
+import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function getPost(slug: string) {
+  const supabase = await createClient();
+  const isUuid = UUID_REGEX.test(slug);
+  const { data: post, error } = await supabase
+    .from("posts")
+    .select("id, slug, title, excerpt, thumbnail, published_at, tags")
+    .match(isUuid ? { id: slug } : { slug })
+    .single();
+  if (error || !post) return null;
+  return post;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPost(slug);
+  if (!post) return { title: "게시글을 찾을 수 없습니다" };
+
+  const title = `${post.title} | ${SITE_NAME}`;
+  const description =
+    post.excerpt?.slice(0, 160) ||
+    `${post.title} - BTC Tools 블로그 비트코인 인사이트`;
+  const url = absoluteUrl(`/blog/${post.id}`);
+  const ogImage = post.thumbnail ? post.thumbnail : undefined;
+
+  return {
+    title: post.title,
+    description,
+    keywords: post.tags
+      ? post.tags.split(/[,\s#]+/).map((t: string) => t.trim()).filter(Boolean)
+      : undefined,
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "article",
+      publishedTime: post.published_at,
+      images: ogImage ? [{ url: ogImage, width: 1200, height: 630 }] : undefined,
+    },
+    twitter: {
+      card: ogImage ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: ogImage ? [ogImage] : undefined,
+    },
+    alternates: { canonical: url },
+  };
+}
 
 export default async function BlogPostPage({
   params,
@@ -27,7 +81,7 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const postTags = post.tags
+  const postTags: string[] = post.tags
     ? Array.from(
         new Set(
           post.tags

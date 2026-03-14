@@ -1,6 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { absoluteUrl } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "블로그",
+  description:
+    "BTC Tools 블로그 - 비트코인 시장, 투자 정보, 온체인 데이터, 유용한 분석 내용. 복잡한 정보를 쉽게 이해할 수 있는 비트코인 인사이트를 제공합니다.",
+  keywords: ["비트코인 블로그", "BTC 분석", "암호화폐 투자", "비트코인 뉴스"],
+  openGraph: {
+    title: "블로그 | BTC Tools",
+    description: "비트코인 시장·투자·온체인 분석 콘텐츠",
+    url: absoluteUrl("/blog"),
+  },
+  alternates: { canonical: absoluteUrl("/blog") },
+};
 import { BlogPostCard, type BlogPost } from "@/components/blog/blog-post-card";
 import { BlogPagination } from "@/components/blog/blog-pagination";
 import { PenSquare } from "lucide-react";

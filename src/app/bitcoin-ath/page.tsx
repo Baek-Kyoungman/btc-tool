@@ -1,4 +1,18 @@
+import type { Metadata } from "next";
 import { BitcoinAth } from "./bitcoin-ath";
+import { absoluteUrl } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "비트코인 최고가 대비 가격",
+  description: "비트코인 사상 최고가(ATH) 대비 현재 가격 비교. 최고가 대비 몇 %인지 한눈에 확인하세요.",
+  keywords: ["비트코인 ATH", "최고가", "BTC 가격", "비트코인 가격"],
+  openGraph: {
+    title: "비트코인 최고가 대비 가격 | BTC Tools",
+    description: "ATH 대비 현재 가격 퍼센트",
+    url: absoluteUrl("/bitcoin-ath"),
+  },
+  alternates: { canonical: absoluteUrl("/bitcoin-ath") },
+};
 
 export default function BitcoinAthPage() {
   return (

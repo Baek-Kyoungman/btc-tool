@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { verifyAdmin } from "../actions";
+
+export const metadata: Metadata = {
+  title: "글쓰기",
+  robots: { index: false, follow: false },
+};
 import { AdminLoginForm } from "./admin-login-form";
 import { BlogWriteForm } from "./blog-write-form";
 import { LogoutButton } from "./logout-button";

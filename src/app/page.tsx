@@ -1,5 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Calculator, Clock, Coins, Gauge, LineChart, TrendingDown, TrendingUp, FileText, Zap } from "lucide-react";
+import { absoluteUrl } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "BTC Tools - 사토시 계산기, 비트코인 시계, 반감기",
+  description:
+    "비트코인 사토시 계산기, 실시간 시계, 반감기 카운트다운, 차트, 공급량, 공포탐욕지수 등 비트코인 투자에 필요한 핵심 데이터를 한 곳에서 확인하세요.",
+  openGraph: {
+    title: "BTC Tools - 비트코인 투자 도구 모음",
+    description: "비트코인 차트, 사토시 계산기, 반감기 카운트다운, 공포탐욕지수 등 실시간 시장 데이터",
+    url: absoluteUrl("/"),
+  },
+  alternates: { canonical: absoluteUrl("/") },
+};
 
 const categories = [
   {

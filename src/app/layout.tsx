@@ -7,6 +7,7 @@ import { MuiProvider } from "@/providers/mui-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { SidebarProvider } from "@/contexts/sidebar-context";
 import { ExtensionErrorSuppress } from "@/components/extension-error-suppress";
+import { SITE_NAME, SITE_DESCRIPTION, getSiteUrl } from "@/lib/seo";
 
 const EXTENSION_ERROR_SUPPRESS = `
 (function(){
@@ -53,9 +54,44 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BTC Tools - 사토시 계산기, 비트코인 시계, 반감기",
-  description:
-    "비트코인 사토시 계산기, 실시간 시계, 반감기 카운트다운 및 블로그. AdSense 승인을 위한 품질 콘텐츠",
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: `${SITE_NAME} - 사토시 계산기, 비트코인 시계, 반감기`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "비트코인",
+    "BTC",
+    "사토시",
+    "사토시 계산기",
+    "비트코인 시계",
+    "비트코인 반감기",
+    "비트코인 차트",
+    "공포탐욕지수",
+    "비트코인 공급량",
+  ],
+  authors: [{ name: SITE_NAME, url: getSiteUrl() }],
+  creator: SITE_NAME,
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} - 사토시 계산기, 비트코인 시계, 반감기`,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} - 사토시 계산기, 비트코인 시계, 반감기`,
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: getSiteUrl(),
+  },
 };
 
 export const viewport: Viewport = {
@@ -73,6 +109,11 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning className="scroll-smooth">
       <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7122591795881411"
+          crossOrigin="anonymous"
+        />
         <script
           dangerouslySetInnerHTML={{ __html: EXTENSION_ERROR_SUPPRESS }}
         />
